@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My juben</title>
+    <link rel="stylesheet" href="/static/css/base.css" />
+    <link rel="stylesheet" href="/static/css/jeditor.css" />
+    <script src="/static/js/jquery.min.js"></script>
+    <style>
+        iframe{
+            height: 100%;
+    width: 100%;
+    border: 0px solid white;
+    }
+    </style>
+</head>
+<body>
+<div class="main_board">
+
+    <div id="left_board">
+        <div class="btn circle-btn" id="left_close_btn"></div>
+        <div class="list">
+            <div class="li active"><div class="icon"></div><div class="title">我的剧本</div></div>
+            <div class="li"><div class="icon"></div><div class="title">智能资料库</div></div>
+            <div class="li"><div class="icon"></div><div class="title">写作统计</div></div>
+            <div class="li"><div class="icon"></div><div class="title">我的账户</div></div>
+        </div>
+
+        <div id="logout" onclick="logout()"></div>
+    </div>
+    <div id="right_board" style="text-align:center;">
+    </div>
+</div>
+
+<script src="/static/js/base.js"></script>
+<script>
+    setTimeout(function(){$("#left_close_btn").click()}, 500);
+    function getIframeSrc(){
+        var path = getHashString("d");
+        if(path != null){
+            return path;
+        }
+
+        return "/jeditor";
+    }
+    var iframe = $("<iframe></iframe>");
+    iframe.css({"width": window.innerWidth - 300});
+    var iframe_src = getIframeSrc();
+    iframe.attr("src", iframe_src);
+    $("#right_board").append(iframe);
+
+    iframe.on("load", function(){
+        window.location.href = window.location.pathname + "#d=" +iframe[0].contentWindow.location.pathname
+    })
+
+    function logout(){
+        window.location.href = "/user/logout";
+    }
+</script>
+</body>
+</html>

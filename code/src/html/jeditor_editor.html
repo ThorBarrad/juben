@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Juben</title>
+    <link rel="stylesheet" href="/static/css/base.css" />
+    <link rel="stylesheet" href="/static/css/jeditor.css" />
+    <link rel="stylesheet" href="/static/css/scene.css" />
+
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/vue.js"></script>
+    <script>
+        drama_id = window.location.pathname.split("/")[3]
+        episode_id = window.location.pathname.split("/")[4]
+        scene_id = window.location.pathname.split("/")[5]
+    </script>
+</head>
+<body>
+<div class="main_board">
+    <div id="tip_b"></div>
+        <div class="center_main">
+            <div class="backto"  style="float:left;" onclick=""></div>
+            <div class="save-btn"></div>
+            <script>
+                $(".backto").on("click",function(){
+                    backto("/jeditor/drama/" + drama_id);
+                })
+            </script>
+            <div class="scene_main_board">
+                <div class="top_info">
+                    <div class="form" id="info_form">
+                        <div class="item">
+                            <div class="item_title">场名称</div>
+                            <div class="item_content">
+                                <input type="text" value="" name="scene_name" autocomplete="off" v-model="name">
+                            </div>
+                        </div>
+                        <div class="item">
+                                <div class="item_title">主要角色</div>
+                                <div class="item_content">
+                                    <div class="little-item" v-for="item in main_roles">
+                                        {{item}}
+                                        <div class="deleteItself" v-on:click="del_main_role(item)" ></div>
+                                    </div>
+                                    <input type="text" value="" name="main_roles" autocomplete="off" style="background: #009688;border-radius: 10px;width: 200px;height: 25px;color: white;" v-on:keyup.enter="push_main_role($event)">
+                                </div>
+                            </div>
+                        <div class="item_line">
+                            <div class="item">
+                                <div class="item_title">场景</div>
+                                <div class="item_content">
+
+                                    <input type="text" value="" name="scene_type" autocomplete="off" v-model="scene">
+                                </div>
+                            </div>
+                        <div class="item">
+                                <div class="item_title">天气</div>
+                                <div class="item_content">
+                                    <input type="text" value="" name="scene_weather" autocomplete="off"v-model="weather">
+                                </div>
+                        </div>
+                        <div class="item">
+                                <div class="item_title">发生时间</div>
+                                <div class="item_content">
+                                    <input type="text" value="" name="scene_time" autocomplete="off"v-model="time">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="association"><input type="checkbox"/><span>剧本联想功能</span></div>
+                    </div>
+                </div>
+                <div class="bottom_textarea" id="editor"></div>
+
+            </div>
+            <div class="scene_tips_board">
+                    <div style="
+                        height: 50px;
+                        font-size: 20px;
+                        font-weight: bold;
+                        text-align: center;
+                        line-height: 50px;
+                    ">智能提示</div>
+            </div>
+        </div>
+</div>
+<script src="/static/js/base.js"></script>
+<script src="/static/js/wangEditor.min.js"></script>
+<script src="/static/js/scene.js"></script>
+</body>
+</html>

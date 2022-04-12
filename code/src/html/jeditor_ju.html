@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My juben</title>
+    <link rel="stylesheet" href="/static/css/base.css" />
+    <link rel="stylesheet" href="/static/css/jeditor.css" />
+    <script src="/static/js/jquery.min.js"></script>
+
+</head>
+<body>
+<div class="main_board">
+
+        <div class="center_main">
+            <div class="searchbar">
+                <div class="search_input">
+                    <input type="input"/>
+                </div>
+                <div class="search_btn">
+                    <div class="btn">Search</div>
+                </div>
+            </div>
+            <div class="item_board">
+                <div class="jumu_item" id="new_add_jumu_item">
+                    <div class="title" id="new_jumu" style="cursor:pointer;">新建剧目</div>
+                    <div class="hidden_menu">
+                        <div class="btn" style="width:100%;">上传</div>
+                    </div>
+                </div>
+                <div style="height:180px;width:2px;background:#ddd;margin:20px 10px;"></div>
+            </div>
+        </div>
+</div>
+
+
+<div class="msgBox" id="add_new_jumu_board" style="display:none;">
+    <div class="cover-loading" style="display:none;" id="form_cover"></div>
+    <div class="btn close_btn"></div>
+    <div class="title">新建剧目</div>
+    <div class="form" id="new_form">
+
+        <div class="item">
+            <div class="item_title">剧目名称</div>
+            <div class="item_content">
+                <input type="text" value="" name="drama_name">
+            </div>
+        </div>
+        <div class="item">
+            <div class="item_title">主要角色</div>
+            <div class="item_content">
+                <input type="text" value="" name="main_roles">
+            </div>
+        </div>
+    <div class="item">
+            <div class="item_title">剧目题材</div>
+            <div class="item_content">
+                <input type="text" value="" name="drama_theme">
+            </div>
+        </div>
+    <div class="item">
+            <div class="item_title">剧目类型</div>
+            <div class="item_content">
+                <input type="text" value="" name="drama_type">
+            </div>
+        </div>
+    <div class="item">
+            <div class="item_title">剧目年代</div>
+            <div class="item_content">
+                <input type="text" value="" name="drama_time">
+            </div>
+        </div>
+    </div>
+
+    <div style="height:40px;margin:10px;margin-top:20px;">
+        <div class="left left_40"><div class="btn reset_btn" id="reset_btn">reset</div></div>
+        <div class="right right_60"><div class="btn submit_btn" id="submit_btn">submit</div></div>
+    </div>
+    <script>
+        var new_form = $("#new_form");
+        var items = new_form.find(".item input");
+        $("#reset_btn").on("click",function(){
+            items.val("");
+        });
+        $("#submit_btn").on("click", function(){
+            var form = {}
+           for(var i = 0; i < items.length; i ++ ){
+                if(items[i].value.length == 0){
+                    items[i].style.border = "2px dashed #E57373";
+                    setTimeout(function(){
+                        items[i].style.border = "0px dashed transparent";
+                    },1000);
+                    return;
+                }
+                form[items[i].getAttribute("name")] = items[i].value;
+            }
+            $("#form_cover").css("display","block");
+            $.ajax({
+            type:"POST",
+            url:"/jeditor/api/createdrama",
+
+		    contentType:'application/json;charset=UTF-8',
+            data:JSON.stringify(form),
+            async:false,
+            dataType:"json",
+            success:function(returndata){
+                var jumu = new Jumu();
+                jumu.__init__(returndata[0]);
+                jumu.create();
+            }
+            })
+            $("#form_cover").css("display","none");
+            $("#add_new_jumu_board").css("display","none");
+        });
+    </script>
+</div>
+
+<!--<div class="msgBox" id="edit_jumu_board" style="display:none;">-->
+<!--    <div class="btn close_btn"></div>-->
+<!--    <div class="title">编辑剧目</div>-->
+<!--    <div class="form">-->
+
+<!--        <div class="item">-->
+<!--            <div class="item_title">剧目名称</div>-->
+<!--            <div class="item_content">-->
+<!--                <input type="text" value="None"/>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="item">-->
+<!--            <div class="item_title">剧目名称</div>-->
+<!--            <div class="item_content">-->
+<!--                <input type="text" value="None"/>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div style="height:40px;margin:10px;margin-top:20px;">-->
+<!--        <div class="btn submit_btn">submit</div>-->
+<!--    </div>-->
+<!--</div>-->
+
+
+<div class="msgBox" id="question_board" style="display:none;    border-top: 5px solid #F44336;">
+    <div style="text-align: justify;
+    font-size: 18px;
+    font-weight: 900;
+    padding: 15px 50px;">你正在进行删除操作，删除后文件无法恢复，是否继续？</div>
+
+
+    <div id="confirm" style="height:40px;margin:10px;margin-top:20px;">
+        <div class="left left_40"><div class="btn delete_btn">delete</div></div>
+        <div class="right right_60"><div class="btn cancel_btn">cancel</div></div>
+    </div>
+</div>
+
+<script src="/static/js/base.js"></script>
+<script src="/static/js/jeditor.js"></script>
+<script>
+$.ajax({
+type:"POST",
+url:"/jeditor/api/drama",
+async:true,
+dataType:"json",
+success:function(returndata){
+    for(var i in returndata[0]){
+    var jumu = new Jumu();
+    jumu.__init__(returndata[0][i]);
+    jumu.create();
+    }
+
+}
+})
+</script>
+</body>
+</html>

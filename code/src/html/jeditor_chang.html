@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My juben</title>
+    <link rel="stylesheet" href="/static/css/base.css" />
+    <link rel="stylesheet" href="/static/css/jeditor.css" />
+    <link rel="stylesheet" href="/static/css/chang.css" />
+    <link rel="stylesheet" href="/static/css/drag.css" />
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/jquery-ui.js"></script>
+    <script src="/static/js/jsplumb.min.js"></script>
+    <script src="/static/js/drag.js"></script>
+     <script src="/static/js/d3.v3.min.js"></script>
+    <script>
+        drama_id = window.location.pathname.split("/")[3]
+        episode_id = window.location.pathname.split("/")[4]
+    </script>
+</head>
+<body>
+<div class="main_board">
+        <div class="center_main">
+            <div class="backto"  style="float:left;" onclick=""></div>
+            <div class="save-btn"></div>
+            <script>
+                $(".backto").on("click",function(){
+                    backto("/jeditor/drama/" + drama_id);
+                })
+            </script>
+            <div id="chang_board">
+                <div id="chang_main_board">
+                    <div id="chang_canvas"></div>
+                    <div id="tools_bar">
+                        <div class="title">工具栏</div>
+                        <div id="tool_item_board">
+
+                        </div>
+                    </div>
+                </div>
+                <div id="chang_item_board">
+                    <div class="item" id="new_add_chang_item">
+                        <div class="title" id="new_chang" style="cursor:pointer;">新建场</div>
+                        <div class="hidden_menu">
+                            <div class="btn" style="width:100%;">上传</div>
+                        </div>
+                    </div>
+                    <div style="height:2px;width:calc(100% - 20px);background:#ddd;margin:10px 10px;"></div>
+<!--                    <div class="item">-->
+<!--                        <div class='title'>title</div>-->
+<!--                        <div class='hidden_menu'>-->
+<!--                            <div class='btn'>下载</div>-->
+<!--                            <div class='btn'>下载</div>-->
+<!--                            <div class='btn'>下载</div>-->
+<!--                            <div class='btn'>下载</div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                </div>
+            </div>
+        </div>
+</div>
+
+<div class="msgBox" id="add_new_chang_board" style="display:none;z-index:11;">
+    <div class="cover-loading" style="display:none;" id="form_cover"></div>
+    <div class="btn close_btn"></div>
+    <div class="title">新建剧目</div>
+    <div class="form" id="new_form">
+
+        <div class="item">
+            <div class="item_title">场名称</div>
+            <div class="item_content">
+                <input type="text" value="" name="scene_name" autocomplete="off">
+            </div>
+        </div>
+    <div class="item">
+            <div class="item_title">主要角色</div>
+            <div class="item_content">
+                <input type="text" value="" name="main_roles" autocomplete="off">
+            </div>
+        </div>
+    <div class="item">
+            <div class="item_title">场类型</div>
+            <div class="item_content">
+                <input type="text" value="" name="scene_type" autocomplete="off">
+            </div>
+        </div>
+    <div class="item">
+            <div class="item_title">场时间</div>
+            <div class="item_content">
+                <input type="text" value="" name="scene_time" autocomplete="off">
+            </div>
+        </div>
+    </div>
+
+    <div style="height:40px;margin:10px;margin-top:20px;">
+        <div class="left left_40"><div class="btn reset_btn" id="reset_btn">reset</div></div>
+        <div class="right right_60"><div class="btn submit_btn" id="submit_btn">submit</div></div>
+    </div>
+</div>
+
+
+<script src="/static/js/base.js"></script>
+<script src="/static/js/changeditor.js"></script>
+<script>
+
+
+
+</script>
+
+
+    <script>
+        var new_form = $("#new_form");
+        var items = new_form.find(".item input");
+        $("#reset_btn").on("click",function(){
+            items.val("");
+        });
+        $("#submit_btn").on("click", function(){
+            var form = {}
+           for(var i = 0; i < items.length; i ++ ){
+                if(items[i].value.length == 0){
+                    items[i].style.border = "2px dashed #E57373";
+                    setTimeout(function(){
+                        items[i].style.border = "0px dashed transparent";
+                    },1000);
+                    return;
+                }
+                form[items[i].getAttribute("name")] = items[i].value;
+            }
+            $("#form_cover").css("display","block");
+            $.ajax({
+            type:"POST",
+            url:"/jeditor/api/createepisodescene/" + drama_id + "/" + episode_id,
+
+		    contentType:'application/json;charset=UTF-8',
+            data:JSON.stringify(form),
+            async:false,
+            dataType:"json",
+            success:function(returndata){
+                var scene_thumb = new Scene_Thumb(changeditor);
+                scene_thumb.__init__(returndata[0]);
+                scene_thumb.create();
+            }
+            })
+            $("#form_cover").css("display","none");
+            $("#add_new_chang_board").css("display","none");
+        });
+    </script>
+</body>
+</html>
